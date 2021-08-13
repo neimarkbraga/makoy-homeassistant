@@ -1,0 +1,133 @@
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+ha-card {
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  padding: 0px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.preview {
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+  max-width: 225px;
+  padding: 15px 0 0;
+  font-size: 16px;
+
+  .display-box {
+    width: 100%;
+    position: relative;
+    padding-bottom: 100%;
+
+    .light-indicator {
+      box-sizing: border-box;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      z-index: 0;
+      border-radius: 50%;
+      border: 4px solid rgba(0,0,0,0);
+      transform: rotate(45deg);
+
+      &.level-1 {
+        border-top: 4px solid var(--primary-color);
+      }
+
+      &.level-2 {
+        border-top: 4px solid var(--primary-color);
+        border-right: 4px solid var(--primary-color);
+      }
+
+      &.level-3 {
+        border-top: 4px solid var(--primary-color);
+        border-right: 4px solid var(--primary-color);
+        border-bottom: 4px solid var(--primary-color);
+      }
+
+      &.level-auto {
+        border-top: 4px solid var(--primary-color);
+        border-right: 4px solid var(--primary-color);
+        border-bottom: 4px solid var(--primary-color);
+        border-left: 4px solid var(--primary-color);
+      }
+    }
+
+    .content-wrapper {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      padding: 6px;
+      box-sizing: border-box;
+      z-index: 1;
+
+      .content {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: rgba(255,255,255,0.01);
+        text-align: center;
+      }
+    }
+
+    .humidity-label {
+      display: inline-block;
+      font-size: 4.5em;
+      font-weight: normal;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .target-humidity-label {
+      display: inline-block;
+      margin: 10px 0 0;
+      line-height: 1;
+    }
+
+    .mode-label {
+      display: inline-block;
+      color: var(--secondary-text-color);
+      margin: 5px 0 0;
+      line-height: 1;
+    }
+  }
+}
+
+.actions-content {
+  .toolbar-buttons-container {
+    display: flex;
+    justify-content: center;
+
+    ha-icon-button {
+      color: var(--disabled-text-color);
+
+      &.active {
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  .display-name {
+    text-align: center;
+    font-size: 16px;
+    line-height: 1;
+    margin: 0;
+  }
+
+  padding-bottom: 15px;
+}
