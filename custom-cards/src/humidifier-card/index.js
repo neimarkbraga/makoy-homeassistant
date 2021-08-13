@@ -34,7 +34,8 @@ class HumidifierCard extends LitElement {
   }
 
   get name() {
-    const { name, friendly_name } = this.entity.attributes;
+    const { name } = this.config;
+    const { friendly_name } = this.entity.attributes;
     return name || friendly_name || 'Humidifier';
   }
 
