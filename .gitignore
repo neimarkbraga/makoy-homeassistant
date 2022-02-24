@@ -1,4 +1,7 @@
 .idea
 
-custom-cards/node_modules
-custom-cards/dist
+dist
+dist/*
+
+node_modules
+node_modules/*

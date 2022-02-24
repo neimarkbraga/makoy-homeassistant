@@ -1,3 +1,23 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/utilities";
+
+$grid-breakpoints: (xs: 0);
+$utilities: map-merge(
+    $utilities,
+    (
+      "align": null,
+      "float": null,
+      "background-color": null,
+      "bg-opacity": null,
+      "gradient": null,
+      "border-color": null
+    )
+);
+
+@import "~bootstrap/scss/utilities/api";
+
 :host {
   display: flex;
   flex: 1;
@@ -19,7 +39,7 @@ ha-card {
   position: relative;
   margin: 0 auto;
   max-width: 225px;
-  padding: 15px 0 0;
+  padding: 0;
   font-size: 16px;
 
   .display-box {
@@ -108,26 +128,16 @@ ha-card {
   }
 }
 
-.actions-content {
-  .toolbar-buttons-container {
-    display: flex;
-    justify-content: center;
+ha-icon-button {
+  color: var(--disabled-text-color);
 
-    ha-icon-button {
-      color: var(--disabled-text-color);
-
-      &.active {
-        color: var(--primary-color);
-      }
-    }
+  &.active {
+    color: var(--primary-color);
   }
+}
 
-  .display-name {
-    text-align: center;
-    font-size: 16px;
-    line-height: 1;
-    margin: 0;
-  }
-
-  padding-bottom: 15px;
+.display-name {
+  text-align: center;
+  font-size:  var(--name-font-size, 16px);
+  margin: 0;
 }

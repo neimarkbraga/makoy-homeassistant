@@ -1,0 +1,40 @@
+{
+  "name": "makoy-homeassistant",
+  "version": "1.0.0",
+  "description": "Custom components for homeassistant",
+  "main": "dist/app.bundle.js",
+  "scripts": {
+    "build": "webpack --env mode=production",
+    "dev:start": "webpack serve --env mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neimarkbraga/makoy-homeassistant.git"
+  },
+  "author": "Makoy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/neimarkbraga/makoy-homeassistant/issues"
+  },
+  "homepage": "https://github.com/neimarkbraga/makoy-homeassistant#readme",
+  "devDependencies": {
+    "@types/webpack-env": "^1.16.3",
+    "raw-loader": "^4.0.2",
+    "sass": "^1.49.8",
+    "sass-loader": "^12.6.0",
+    "terser-webpack-plugin": "^5.3.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.5",
+    "webpack": "^5.69.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4"
+  },
+  "dependencies": {
+    "@mdi/js": "^6.5.95",
+    "bootstrap": "^5.1.3",
+    "custom-card-helpers": "^1.9.0",
+    "dotenv-webpack": "^7.1.0",
+    "lit": "^2.2.0",
+    "svg-pathdata": "^6.0.3"
+  }
+}
