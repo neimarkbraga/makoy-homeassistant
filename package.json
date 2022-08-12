@@ -5,7 +5,7 @@
   "main": "dist/app.bundle.js",
   "scripts": {
     "build": "webpack --env mode=production",
-    "dev:start": "webpack serve --env mode=development"
+    "start:dev": "webpack serve --env mode=development"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/neimarkbraga/makoy-homeassistant#readme",
   "devDependencies": {
     "@types/webpack-env": "^1.16.3",
+    "prettier": "^2.7.1",
     "raw-loader": "^4.0.2",
     "sass": "^1.49.8",
     "sass-loader": "^12.6.0",
