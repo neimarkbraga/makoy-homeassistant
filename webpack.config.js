@@ -10,10 +10,17 @@ module.exports = (env) => {
   return {
     mode,
     devtool: mode === 'development' ? 'inline-cheap-module-source-map' : 'source-map',
-    entry: './src/index.ts',
+    entry: {
+      main: './src/index.ts',
+      icons: './src/icons/index.ts',
+    },
     output: {
+      clean: true,
       path: path.resolve(__dirname, (mode === 'development' ? '.dev' : 'dist')),
-      filename: OUTPUT_FILENAME
+      filename: ({ chunk }) => {
+        if (/main/.test(chunk.name)) return OUTPUT_FILENAME;
+        return `${chunk.name}.bundle.js`;
+      }
     },
     optimization: {
       minimize: mode === 'production',
@@ -60,6 +67,7 @@ module.exports = (env) => {
       headers: {
         'Access-Control-Allow-Origin': '*'
       }
-    }
+    },
+
   };
 };
