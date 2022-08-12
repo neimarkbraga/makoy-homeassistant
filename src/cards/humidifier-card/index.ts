@@ -2,7 +2,6 @@ import { html, LitElement, PropertyValues, unsafeCSS } from 'lit';
 import { classMap } from 'lit/directives/class-map.js';
 import { customElement, property } from 'lit/decorators.js';
 import { fireEvent, hasConfigOrEntityChanged } from 'custom-card-helpers';
-
 import {
   mdiCircleSlice2,
   mdiCircleSlice4,
@@ -10,23 +9,24 @@ import {
   mdiPower,
   mdiWaterPercent
 } from '@mdi/js';
-
 import style from './style.module.scss';
 import { HomeAssistant, Entity } from '../../interfaces/hass';
 import { CardConfig, HumidifierAttributes } from './index.types';
-import { isDevelopment } from '../../libs/debug';
+import { buildCardDetails } from '../utils';
 
-const ELEMENT_NAME = (isDevelopment ? 'dev-' : '') + 'humidifier-card';
-const DISPLAY_NAME = (isDevelopment ? '[dev] ' : '') + 'Humidifier Card';
-const DESCRIPTION = (isDevelopment ? '[dev] ' : '') + 'Humidifier card allows you to control your smart humidifier.';
+const { ELEMENT_NAME, DISPLAY_NAME, DESCRIPTION } = buildCardDetails({
+  elementName: 'humidifier-card',
+  displayName: 'Humidifier Card',
+  description: 'Humidifier card allows you to control your smart humidifier.'
+});
 
 @customElement(ELEMENT_NAME)
 class HumidifierCard extends LitElement {
   @property({ type: Object })
-  hass?: HomeAssistant
+  hass?: HomeAssistant;
 
   @property({ type: Object })
-  config?: CardConfig
+  config?: CardConfig;
 
   @property({ type: Boolean })
   isRequesting: boolean = false;
@@ -35,7 +35,7 @@ class HumidifierCard extends LitElement {
 
   // entity instance
   get entity(): Entity<HumidifierAttributes> | null {
-    const entity =  this.hass?.states[this.config.entity] || null;
+    const entity = this.hass?.states[this.config.entity] || null;
     if (entity) return entity as Entity<HumidifierAttributes>;
     return null;
   }
@@ -48,8 +48,7 @@ class HumidifierCard extends LitElement {
   // when component updated
   updated(_changedProperties: PropertyValues) {
     const hass = _changedProperties.get('hass') as HomeAssistant | undefined;
-    if (hass && this.entity !== hass.states[this.config.entity])
-      this.isRequesting = false;
+    if (hass && this.entity !== hass.states[this.config.entity]) this.isRequesting = false;
   }
 
   // set config handler
@@ -76,36 +75,38 @@ class HumidifierCard extends LitElement {
       { entityId: this.entity.entity_id },
       {
         bubbles: true,
-        composed: true,
+        composed: true
       }
     );
   }
 
   renderButtons() {
-    if (!this.entity?.attributes.available_modes)
-      return html``;
+    if (!this.entity?.attributes.available_modes) return html``;
 
-    const modes = this.entity.attributes.available_modes.filter(a => !/off/i.test(a));
-    return modes.map(mode => {
-      const icon = (() => {
-        const levelMatch = /^level(\d+)/i.exec(mode);
-        if (levelMatch) {
-          if (/^1$/.test(levelMatch[1])) return mdiCircleSlice2;
-          if (/^2$/.test(levelMatch[1])) return mdiCircleSlice4;
-          if (/^3$/.test(levelMatch[1])) return mdiCircleSlice6;
-        }
-        return mdiWaterPercent;
-      })();
+    const modes = this.entity.attributes.available_modes.filter((a) => !/off/i.test(a));
+    return modes
+      .map((mode) => {
+        const icon = (() => {
+          const levelMatch = /^level(\d+)/i.exec(mode);
+          if (levelMatch) {
+            if (/^1$/.test(levelMatch[1])) return mdiCircleSlice2;
+            if (/^2$/.test(levelMatch[1])) return mdiCircleSlice4;
+            if (/^3$/.test(levelMatch[1])) return mdiCircleSlice6;
+          }
+          return mdiWaterPercent;
+        })();
 
-      return html`
-        <ha-icon-button
-          path="${icon}"
-          label="${mode}"
-          class="${this.entity.attributes.mode === mode ? 'active' : ''}"
-          @click="${() => this.callService('humidifier', 'set_mode', { mode })}">
-        </ha-icon-button>
-      `;
-    }).reverse();
+        return html`
+          <ha-icon-button
+            path="${icon}"
+            label="${mode}"
+            class="${this.entity.attributes.mode === mode ? 'active' : ''}"
+            @click="${() => this.callService('humidifier', 'set_mode', { mode })}"
+          >
+          </ha-icon-button>
+        `;
+      })
+      .reverse();
   }
 
   render() {
@@ -150,10 +151,11 @@ class HumidifierCard extends LitElement {
         <div class="pt-3 d-flex justify-content-center">
           ${this.renderButtons()}
           <ha-icon-button
-            class="${classMap({active: this.entity.state === 'on'})}"
+            class="${classMap({ active: this.entity.state === 'on' })}"
             path="${mdiPower}"
             label="Power on/off"
-            @click="${() => this.callService('humidifier', 'toggle')}">
+            @click="${() => this.callService('humidifier', 'toggle')}"
+          >
           </ha-icon-button>
         </div>
 

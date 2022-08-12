@@ -66,30 +66,42 @@ $utilities: map-merge(
         cursor: pointer;
       }
 
-      button {
-        padding: 2px;
-        background-color: rgba(0,0,0,0);
-        border: 0 none;
+      .buttons-container {
+        button {
+          padding: 2px;
+          background-color: rgba(0,0,0,0);
+          border: 0 none;
 
-        &.clickable {
-          cursor: pointer;
-          opacity: 0.2;
-          transform: scale(1);
-          transform-origin: center center;
-
-          &:hover {
-            opacity: 0.4;
-            transform: scale(1.2);
-          }
-
-          &:active {
+          &.clickable {
+            cursor: pointer;
+            opacity: 0.2;
             transform: scale(1);
-          }
+            transform-origin: center center;
 
-          &.active {
-            transform: scale(1.1);
-            opacity: 1;
+            &:hover {
+              opacity: 0.4;
+              transform: scale(1.2);
+            }
+
+            &:active {
+              transform: scale(1);
+            }
+
+            &.active {
+              transform: scale(1.1);
+              opacity: 1;
+            }
           }
+        }
+      }
+
+      &.state-off {
+        .buttons-container {
+          display: none;
+        }
+        .color-indicator, .pm2-text {
+          padding-top: 0 !important;
+          opacity: 0.1;
         }
       }
     }

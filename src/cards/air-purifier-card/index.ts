@@ -4,23 +4,24 @@ import { customElement, property } from 'lit/decorators.js';
 import { fireEvent, hasConfigOrEntityChanged } from 'custom-card-helpers';
 import { paddingLeft } from '../../libs/utils';
 import { mdiPower } from '@mdi/js';
-
 import style from './style.module.scss';
 import { HomeAssistant, Entity } from '../../interfaces/hass';
 import { CardConfig, AirPurifierAttributes } from './index.types';
-import { isDevelopment } from '../../libs/debug';
+import { buildCardDetails } from '../utils';
 
-const ELEMENT_NAME = (isDevelopment ? 'dev-' : '') + 'air-purifier-card';
-const DISPLAY_NAME = (isDevelopment ? '[dev] ' : '') + 'Air Purifier Card';
-const DESCRIPTION = (isDevelopment ? '[dev] ' : '') + 'Air Purifier card allows you to control your smart air purifier.';
+const { ELEMENT_NAME, DISPLAY_NAME, DESCRIPTION } = buildCardDetails({
+  elementName: 'air-purifier-card',
+  displayName: 'air-purifier-card',
+  description: 'Air Purifier card allows you to control your smart air purifier.'
+});
 
 @customElement(ELEMENT_NAME)
 class AirPurifierCard extends LitElement {
   @property({ type: Object })
-  hass?: HomeAssistant
+  hass?: HomeAssistant;
 
   @property({ type: Object })
-  config?: CardConfig
+  config?: CardConfig;
 
   @property({ type: Boolean })
   isRequesting: boolean = false;
@@ -29,7 +30,7 @@ class AirPurifierCard extends LitElement {
 
   // entity instance
   get entity(): Entity<AirPurifierAttributes> | null {
-    const entity =  this.hass?.states[this.config.entity] || null;
+    const entity = this.hass?.states[this.config.entity] || null;
     if (entity) return entity as Entity<AirPurifierAttributes>;
     return null;
   }
@@ -42,8 +43,7 @@ class AirPurifierCard extends LitElement {
   // when component updated
   updated(_changedProperties: PropertyValues) {
     const hass = _changedProperties.get('hass') as HomeAssistant | undefined;
-    if (hass && this.entity !== hass.states[this.config.entity])
-      this.isRequesting = false;
+    if (hass && this.entity !== hass.states[this.config.entity]) this.isRequesting = false;
   }
 
   // set config handler
@@ -81,7 +81,7 @@ class AirPurifierCard extends LitElement {
       { entityId: this.entity.entity_id },
       {
         bubbles: true,
-        composed: true,
+        composed: true
       }
     );
   }
@@ -91,7 +91,7 @@ class AirPurifierCard extends LitElement {
     if (!this.entity || /unavailable/i.test(this.entity.state))
       return html`
         <ha-card class="p-3">
-          <p class="m-0">Humidifier not available</p>
+          <p class="m-0">Air Purifier not available</p>
         </ha-card>
       `;
 
@@ -112,23 +112,49 @@ class AirPurifierCard extends LitElement {
           <div style="width: 48px"></div>
           <div class="preview">
             <div class="shape">
-              <div class="content">
+              <div class="content state-${this.entity.state}">
                 <div class="w-100 text-center">
-                  <div class="color-indicator" style="background-color: ${this.getIndicatorColor()}"></div>
-                  <div class="pm2-text pt-3" @click="${() => this.handleMore()}">${paddingLeft(attributes['environment.pm2_5_density'], 3, '0')}</div>
-                  <div class="pt-2">
-                    <button class="clickable ${classMap({active: /auto/i.test(this.entity.state)})}"
-                            @click="${() => this.callService('climate', 'set_hvac_mode', {hvac_mode: 'auto'})}">
+                  <div
+                    class="color-indicator"
+                    style="background-color: ${this.getIndicatorColor()}"
+                  ></div>
+                  <div class="pm2-text pt-3" @click="${() => this.handleMore()}">
+                    ${paddingLeft(attributes['environment.pm2_5_density'], 3, '0')}
+                  </div>
+                  <div class="buttons-container pt-2">
+                    <button
+                      class="clickable ${classMap({
+                        active: /auto/i.test(this.entity.attributes.preset_mode)
+                      })}"
+                      @click="${() =>
+                        this.callService('fan', 'set_preset_mode', {
+                          preset_mode: 'Auto'
+                        })}"
+                    >
                       <div class="letter-icon">
                         <div>A</div>
                       </div>
                     </button>
-                    <button class="clickable ${classMap({active: /sleep/i.test(this.entity.state)})}"
-                            @click="${() => this.callService('climate', 'set_preset_mode', {preset_mode: 'Sleep'})}">
+                    <button
+                      class="clickable ${classMap({
+                        active: /sleep/i.test(this.entity.attributes.preset_mode)
+                      })}"
+                      @click="${() =>
+                        this.callService('fan', 'set_preset_mode', {
+                          preset_mode: 'Sleep'
+                        })}"
+                    >
                       <ha-icon icon="mdi:weather-night"></ha-icon>
                     </button>
-                    <button class="clickable ${classMap({active: /favorite/i.test(this.entity.state)})}"
-                            @click="${() => this.callService('climate', 'set_preset_mode', {preset_mode: 'Favorite'})}">
+                    <button
+                      class="clickable ${classMap({
+                        active: /favorite/i.test(this.entity.attributes.preset_mode)
+                      })}"
+                      @click="${() =>
+                        this.callService('fan', 'set_preset_mode', {
+                          preset_mode: 'Favorite'
+                        })}"
+                    >
                       <ha-icon icon="mdi:heart-outline"></ha-icon>
                     </button>
                     <button>
@@ -140,17 +166,16 @@ class AirPurifierCard extends LitElement {
             </div>
           </div>
           <ha-icon-button
-            class="${classMap({active: isOn})}"
+            class="${classMap({ active: isOn })}"
             path="${mdiPower}"
             label="Power on/off"
-            @click="${() => this.callService('climate', 'set_hvac_mode', {hvac_mode: isOn ? 'off' : 'auto'})}">
+            @click="${() => this.callService('fan', 'toggle')}"
+          >
           </ha-icon-button>
         </div>
 
-        <p class="pb-3 display-name">
-          ${this.config.name}
-        </p>
-        
+        <p class="pb-3 display-name">${this.config.name}</p>
+
         <div class="stats">
           <div class="stats-block">
             <span class="stats-value">${attributes['filter.filter_life_level']}</span>
