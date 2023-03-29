@@ -1,1 +1,1 @@
-import './sidepanel-items';
+import './user-restrictions';
